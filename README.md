@@ -1,3 +1,4 @@
 # FBXSDKTest
 Autodesk公司开发的Fbx格式文件有点复杂,他们提供了FBX SDK专门用来读取和写入FBX文件
 里面是关于fbx sdk的使用测试代码
+有关visualstudio的环境配置 https://help.autodesk.com/view/FBX/2018/ENU/?guid=FBX_Developer_Help_getting_started_installing_and_configuring_configuring_the_fbx_sdk_for_wind_html
