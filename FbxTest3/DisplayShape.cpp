@@ -12,7 +12,7 @@ int main()
 	FbxScene* fbxScene = NULL;
 	bool result;
 	InitializeSdkObjects(fbxManager, fbxScene);
-	FbxString fbxFilePath("test.fbx");
+	FbxString fbxFilePath("test.obj");
 	if (fbxFilePath.IsEmpty())
 	{
 		FBXSDK_printf("\n\nUsage: ImportScene <FBX file name>\n\n");
@@ -28,8 +28,17 @@ int main()
 	{
 		// Display the scene.
 		DisplayMetaData(fbxScene);
+		FbxNode* mypatch = CreatePatch(fbxScene, "myPatch");
+		FbxNode* lRootNode = fbxScene->GetRootNode();
+		lRootNode->AddChild(mypatch);
 	}
-
+	result = SaveScene(fbxManager, fbxScene, "test_out2.fbx");
+	if (result == false)
+	{
+		FBXSDK_printf("\n\nAn error occurred while saving the scene...\n");
+		fbxManager->Destroy();
+		return 0;
+	}
 	return 0;
 }
 
@@ -226,6 +235,49 @@ bool LoadScene(FbxManager* pManager, FbxDocument* pScene, const char* pFilename)
 	return lStatus;
 }
 
+bool SaveScene(FbxManager* pManager, FbxDocument* pScene, const char* pFilename, int pFileFormat /*= -1*/, bool pEmbedMedia /*= false*/)
+{
+	int lMajor, lMinor, lRevision;
+	bool lStatus = true;
+	FbxExporter* lExporter = FbxExporter::Create(pManager, "");
+	if (pFileFormat < 0 || pFileFormat >= pManager->GetIOPluginRegistry()->GetWriterFormatCount())
+	{
+		pFileFormat = pManager->GetIOPluginRegistry()->GetNativeWriterFormat();
+		int lFormatIndex, lFormatCount = pManager->GetIOPluginRegistry()->GetWriterFormatCount();
+		for (lFormatIndex = 0; lFormatIndex < lFormatCount; lFormatIndex++)
+		{
+			if (pManager->GetIOPluginRegistry()->WriterIsFBX(lFormatIndex))
+			{
+				FbxString lDesc = pManager->GetIOPluginRegistry()->GetWriterFormatDescription(lFormatIndex);
+				const char* lASCII = "ascii";
+				if (lDesc.Find(lASCII) >= 0)
+				{
+					pFileFormat = lFormatIndex;
+					break;
+				}
+			}
+		}
+	}
+	IOS_REF.SetBoolProp(EXP_FBX_MATERIAL, true);
+	IOS_REF.SetBoolProp(EXP_FBX_TEXTURE, true);
+	IOS_REF.SetBoolProp(EXP_FBX_EMBEDDED, pEmbedMedia);
+	IOS_REF.SetBoolProp(EXP_FBX_SHAPE, true);
+	IOS_REF.SetBoolProp(EXP_FBX_GOBO, true);
+	IOS_REF.SetBoolProp(EXP_FBX_ANIMATION, true);
+	IOS_REF.SetBoolProp(EXP_FBX_GLOBAL_SETTINGS, true);
+	if (lExporter->Initialize(pFilename, pFileFormat, pManager->GetIOSettings()) == false)
+	{
+		FBXSDK_printf("Call to FbxExporter::Initialize() failed.\n");
+		FBXSDK_printf("Error returned: %s\n\n", lExporter->GetStatus().GetErrorString());
+		return false;
+	}
+	FbxManager::GetFileFormatVersion(lMajor, lMinor, lRevision);
+	FBXSDK_printf("Save FBX file format version %d.%d.%d\n\n", lMajor, lMinor, lRevision);
+	lStatus = lExporter->Export(pScene);
+	lExporter->Destroy();
+	return lStatus;
+}
+
 void DisplayMetaData(FbxScene* pScene)
 {
 	FbxDocumentInfo* sceneInfo = pScene->GetSceneInfo();
@@ -266,4 +318,62 @@ void DisplayMetaData(FbxScene* pScene)
 			}
 		}
 	}
+}
+
+FbxNode* CreatePatch(FbxScene* pScene, const char* pName)
+{
+	FbxPatch* lPatch = FbxPatch::Create(pScene, pName);
+	lPatch->InitControlPoints(4, FbxPatch::eBSpline, 7, FbxPatch::eBSpline);
+	lPatch->SetStep(4, 4);
+	lPatch->SetClosed(true, false);
+
+	FbxVector4* lVector4 = lPatch->GetControlPoints();
+	for (int i = 0; i < 7; i++)
+	{
+		double lRadius = 15.0;
+		double lSegmentLength = 20.0;
+		lVector4[4 * i + 0].Set(lRadius, 0.0, (i - 3) * lSegmentLength);
+		lVector4[4 * i + 1].Set(0.0, -lRadius, (i - 3) * lSegmentLength);
+		lVector4[4 * i + 2].Set(-lRadius, 0.0, (i - 3) * lSegmentLength);
+		lVector4[4 * i + 3].Set(0.0, lRadius, (i - 3) * lSegmentLength);
+	}
+	FbxNode* lNode = FbxNode::Create(pScene, pName);
+	FbxVector4 lR(-90.0, 0.0, 0.0);
+	lNode->LclRotation.Set(lR);
+	lNode->SetNodeAttribute(lPatch);
+	return lNode;
+}
+
+FbxNode* CreateSkeleton(FbxScene* pScene, const char* pName)
+{
+	FbxString lRootName(pName);
+	lRootName += "Root";
+	FbxSkeleton* lSkeletonRootAttribute = FbxSkeleton::Create(pScene, pName);
+	lSkeletonRootAttribute->SetSkeletonType(FbxSkeleton::eRoot);
+	FbxNode* lSkeletonRoot = FbxNode::Create(pScene, lRootName.Buffer());
+	lSkeletonRoot->SetNodeAttribute(lSkeletonRootAttribute);
+	lSkeletonRoot->LclTranslation.Set(FbxVector4(0.0, -40.0, 0.0));
+
+	FbxString lLimbNodeName1(pName);
+	lLimbNodeName1 += "LimbNode1";
+	FbxSkeleton* lSkeletonLimbNodeAttribute1 = FbxSkeleton::Create(pScene, lLimbNodeName1);
+	lSkeletonLimbNodeAttribute1->SetSkeletonType(FbxSkeleton::eLimbNode);
+	lSkeletonLimbNodeAttribute1->Size.Set(1.0);
+	FbxNode* lSkeletonLimbNode1 = FbxNode::Create(pScene, lLimbNodeName1.Buffer());
+	lSkeletonLimbNode1->SetNodeAttribute(lSkeletonLimbNodeAttribute1);
+	lSkeletonLimbNode1->LclTranslation.Set(FbxVector4(0.0, 40.0, 0.0));
+
+	FbxString lLimbNodeName2(pName);
+	lLimbNodeName2 += "LimbNode2";
+	FbxSkeleton* lSkeletonLimbNodeAttribute2 = FbxSkeleton::Create(pScene, lLimbNodeName2);
+	lSkeletonLimbNodeAttribute2->SetSkeletonType(FbxSkeleton::eLimbNode);
+	lSkeletonLimbNodeAttribute2->Size.Set(1.0);
+	FbxNode* lSkeletonLimbNode2 = FbxNode::Create(pScene, lLimbNodeName2.Buffer());
+	lSkeletonLimbNode2->SetNodeAttribute(lSkeletonLimbNodeAttribute2);
+	lSkeletonLimbNode2->LclTranslation.Set(FbxVector4(0.0, 40.0, 0.0));
+
+	lSkeletonRoot->AddChild(lSkeletonLimbNode1);
+	lSkeletonLimbNode1->AddChild(lSkeletonLimbNode2);
+
+	return lSkeletonRoot;
 }
