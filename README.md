@@ -1,1 +1,3 @@
 # FBXSDKTest
+Autodesk公司开发的Fbx格式文件有点复杂,他们提供了FBX SDK专门用来读取和写入FBX文件
+里面是关于fbx sdk的使用测试代码
