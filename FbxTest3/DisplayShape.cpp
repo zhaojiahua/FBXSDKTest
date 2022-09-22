@@ -1,9 +1,14 @@
 #include "DisplayShape.h"
+#include <fstream>
+#include <sstream>
+#include <string.h>
 
 #ifdef IOS_REF
 	#undef  IOS_REF
 	#define IOS_REF (*(pManager->GetIOSettings()))
 #endif
+
+using namespace std;
 
 int main()
 {
@@ -28,15 +33,15 @@ int main()
 		// Display the scene.
 		DisplayMetaData(fbxScene);
 
-		//FbxNode* mypatch = CreatePatch(fbxScene, "myPatch");
 		FbxNode* lRootNode = fbxScene->GetRootNode();
-		//lRootNode->AddChild(mypatch);
 		for (int i = 0; i < lRootNode->GetChildCount(); i++)
 		{
 			FbxNode* tempNode = lRootNode->GetChild(i);
 			if (tempNode->GetNodeAttribute()->GetAttributeType() == FbxNodeAttribute::eMesh)
 			{
-				AddBlendShape(tempNode->GetMesh(), tempNode->GetMesh());
+				vector<vector<double>> filepos;
+				ReadObjShape("test.obj", filepos);
+				AddBlendShape(tempNode->GetMesh(), tempNode->GetMesh(), filepos, "bshape050");
 			}
 		}
 	}
@@ -386,8 +391,13 @@ FbxNode* CreateSkeleton(FbxScene* pScene, const char* pName)
 	return lSkeletonRoot;
 }
 
-void AddBlendShape(FbxMesh* selfMesh, FbxMesh* targetMesh)
+void AddBlendShape(FbxMesh* selfMesh, FbxMesh* targetMesh, vector<vector<double>> infilePos, FbxString inbsname)
 {
+	if (targetMesh->GetControlPointsCount() != infilePos.size())
+	{
+		FBXSDK_printf("error: targetMesh controlPoints !=infilePos size \n");
+		return;
+	}
 	FbxBlendShape* bs;
 	int bsCount = selfMesh->GetDeformerCount(FbxDeformer::eBlendShape);
 	if (bsCount == 0)
@@ -397,9 +407,13 @@ void AddBlendShape(FbxMesh* selfMesh, FbxMesh* targetMesh)
 	}
 	else bs = (FbxBlendShape*)selfMesh->GetDeformer(0, FbxDeformer::eBlendShape);
 	FbxBlendShapeChannel* bsCh = FbxBlendShapeChannel::Create(selfMesh, "");
-	FbxShape* shape = FbxShape::Create(targetMesh, "shape");
 	bool addChannelResult = bs->AddBlendShapeChannel(bsCh);
 	if (!addChannelResult)  FBXSDK_printf("addChannelResult Failed\n");
+	FbxShape* shape = FbxShape::Create(targetMesh, inbsname);
+	for (int i = 0; i < infilePos.size(); i++)
+	{
+		shape->SetControlPointAt(FbxVector4(infilePos[i][0], infilePos[i][1], infilePos[i][2], 0), i);
+	}
 	bool addShapeResult = bsCh->AddTargetShape(shape, 100);
 	if (!addShapeResult)  FBXSDK_printf("addShapeResult Failed\n");
 }
@@ -419,4 +433,31 @@ void LoadObjAsShape(FbxManager* pManager, FbxDocument* pScene, const char* pFile
 	bool lStatus = importer->Import(pScene);
 	if (lStatus) { FBXSDK_printf("\nShape import successfully\n"); }
 	importer->Destroy();
+}
+
+void ReadObjShape(const char* pFilename, vector<vector<double>>& shapePoints)
+{
+	ifstream fin;
+	fin.open(pFilename, ios::in);
+	if (!fin.is_open())
+	{
+		FBXSDK_printf("\n\nAn error occurred while read the shape...\n");
+		return;
+	}
+	FBXSDK_printf("\n\nReading...\n");
+	string sline;
+	string first;
+	while (getline(fin,sline))
+	{
+		vector<double> tempVector(3);
+		istringstream ins(sline);
+		ins >> first;
+		if (first=="v")
+		{
+			ins >> tempVector[0] >> tempVector[1] >> tempVector[2];
+			shapePoints.push_back(tempVector);
+		}
+	}
+	fin.close();
+	FBXSDK_printf("\n\nRead over\n");
 }

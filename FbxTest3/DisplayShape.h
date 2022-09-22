@@ -1,6 +1,9 @@
 #pragma once
 
 #include <fbxsdk.h>
+#include <vector>
+
+using namespace std;
 
 void DisplayShape(FbxGeometry* pGeometry);
 
@@ -22,8 +25,10 @@ void DisplayMetaData(FbxScene* pScene);
 FbxNode* CreatePatch(FbxScene* pScene, const char* pName);
 FbxNode* CreateSkeleton(FbxScene* pScene, const char* pName);
 
-void AddBlendShape(FbxMesh* selfMesh, FbxMesh* targetMesh);
+void AddBlendShape(FbxMesh* selfMesh, FbxMesh* targetMesh, vector<vector<double>> infilePos, FbxString inbsname);
 
 void LoadObjAsShape(FbxManager* pManager, FbxDocument* pScene, const char* pFilename);
 
-void ReadObjShape(FbxManager* pManager, FbxDocument* pScene, const char* pFilename);
+void ReadObjShape(const char* pFilename, vector<vector<double>>& shapePoints);
+
+void BatchImportBlendShape();
