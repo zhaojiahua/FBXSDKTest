@@ -5,14 +5,13 @@
 	#define IOS_REF (*(pManager->GetIOSettings()))
 #endif
 
-
 int main()
 {
 	FbxManager* fbxManager = NULL;
 	FbxScene* fbxScene = NULL;
 	bool result;
 	InitializeSdkObjects(fbxManager, fbxScene);
-	FbxString fbxFilePath("test.obj");
+	FbxString fbxFilePath("test.fbx");		/////////////////////////////////////////////////////////////////读取路径
 	if (fbxFilePath.IsEmpty())
 	{
 		FBXSDK_printf("\n\nUsage: ImportScene <FBX file name>\n\n");
@@ -28,11 +27,20 @@ int main()
 	{
 		// Display the scene.
 		DisplayMetaData(fbxScene);
-		FbxNode* mypatch = CreatePatch(fbxScene, "myPatch");
+
+		//FbxNode* mypatch = CreatePatch(fbxScene, "myPatch");
 		FbxNode* lRootNode = fbxScene->GetRootNode();
-		lRootNode->AddChild(mypatch);
+		//lRootNode->AddChild(mypatch);
+		for (int i = 0; i < lRootNode->GetChildCount(); i++)
+		{
+			FbxNode* tempNode = lRootNode->GetChild(i);
+			if (tempNode->GetNodeAttribute()->GetAttributeType() == FbxNodeAttribute::eMesh)
+			{
+				AddBlendShape(tempNode->GetMesh(), tempNode->GetMesh());
+			}
+		}
 	}
-	result = SaveScene(fbxManager, fbxScene, "test_out2.fbx");
+	result = SaveScene(fbxManager, fbxScene, "test_out2.fbx");		////////////////////////////////////////////////写出路径
 	if (result == false)
 	{
 		FBXSDK_printf("\n\nAn error occurred while saving the scene...\n");
@@ -376,4 +384,39 @@ FbxNode* CreateSkeleton(FbxScene* pScene, const char* pName)
 	lSkeletonLimbNode1->AddChild(lSkeletonLimbNode2);
 
 	return lSkeletonRoot;
+}
+
+void AddBlendShape(FbxMesh* selfMesh, FbxMesh* targetMesh)
+{
+	FbxBlendShape* bs;
+	int bsCount = selfMesh->GetDeformerCount(FbxDeformer::eBlendShape);
+	if (bsCount == 0)
+	{
+		bs = FbxBlendShape::Create(selfMesh, "FaceBS");
+		int addBSResult = selfMesh->AddDeformer(bs);
+	}
+	else bs = (FbxBlendShape*)selfMesh->GetDeformer(0, FbxDeformer::eBlendShape);
+	FbxBlendShapeChannel* bsCh = FbxBlendShapeChannel::Create(selfMesh, "");
+	FbxShape* shape = FbxShape::Create(targetMesh, "shape");
+	bool addChannelResult = bs->AddBlendShapeChannel(bsCh);
+	if (!addChannelResult)  FBXSDK_printf("addChannelResult Failed\n");
+	bool addShapeResult = bsCh->AddTargetShape(shape, 100);
+	if (!addShapeResult)  FBXSDK_printf("addShapeResult Failed\n");
+}
+
+void LoadObjAsShape(FbxManager* pManager, FbxDocument* pScene, const char* pFilename)
+{
+	FbxImporter* importer = FbxImporter::Create(pManager, "");
+	const bool importStatus = importer->Initialize(pFilename, -1, pManager->GetIOSettings());
+	if (!importStatus) { FBXSDK_printf("\n\nAn error occurred while load the shape...\n"); return; }
+	IOS_REF.SetBoolProp(IMP_FBX_MATERIAL, false);
+	IOS_REF.SetBoolProp(IMP_FBX_TEXTURE, false);
+	IOS_REF.SetBoolProp(IMP_FBX_LINK, false);
+	IOS_REF.SetBoolProp(IMP_FBX_SHAPE, true);
+	IOS_REF.SetBoolProp(IMP_FBX_GOBO, true);
+	IOS_REF.SetBoolProp(IMP_FBX_ANIMATION, false);
+	IOS_REF.SetBoolProp(IMP_FBX_GLOBAL_SETTINGS, true);
+	bool lStatus = importer->Import(pScene);
+	if (lStatus) { FBXSDK_printf("\nShape import successfully\n"); }
+	importer->Destroy();
 }

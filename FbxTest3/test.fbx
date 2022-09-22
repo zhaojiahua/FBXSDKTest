@@ -8,11 +8,11 @@ FBXHeaderExtension:  {
 		Version: 1000
 		Year: 2022
 		Month: 9
-		Day: 19
-		Hour: 16
-		Minute: 16
-		Second: 2
-		Millisecond: 396
+		Day: 22
+		Hour: 18
+		Minute: 19
+		Second: 19
+		Millisecond: 995
 	}
 	Creator: "FBX SDK/FBX Plugins version 2018.1.1"
 	SceneInfo: "SceneInfo::GlobalInfo", "UserData" {
@@ -28,30 +28,30 @@ FBXHeaderExtension:  {
 			Comment: ""
 		}
 		Properties70:  {
-			P: "DocumentUrl", "KString", "Url", "", "C:\Users\1\Desktop\test.fbx"
-			P: "SrcDocumentUrl", "KString", "Url", "", "C:\Users\1\Desktop\test.fbx"
+			P: "DocumentUrl", "KString", "Url", "", "E:\AAA_myself\visualstudio2019\FBXSDKTest-main\FbxTest3\test.fbx"
+			P: "SrcDocumentUrl", "KString", "Url", "", "E:\AAA_myself\visualstudio2019\FBXSDKTest-main\FbxTest3\test.fbx"
 			P: "Original", "Compound", "", ""
 			P: "Original|ApplicationVendor", "KString", "", "", "Autodesk"
 			P: "Original|ApplicationName", "KString", "", "", "Maya"
 			P: "Original|ApplicationVersion", "KString", "", "", "201800"
-			P: "Original|DateTime_GMT", "DateTime", "", "", "19/09/2022 08:16:02.395"
-			P: "Original|FileName", "KString", "", "", "C:\Users\1\Desktop\test.fbx"
+			P: "Original|DateTime_GMT", "DateTime", "", "", "22/09/2022 10:19:19.993"
+			P: "Original|FileName", "KString", "", "", "E:\AAA_myself\visualstudio2019\FBXSDKTest-main\FbxTest3\test.fbx"
 			P: "LastSaved", "Compound", "", ""
 			P: "LastSaved|ApplicationVendor", "KString", "", "", "Autodesk"
 			P: "LastSaved|ApplicationName", "KString", "", "", "Maya"
 			P: "LastSaved|ApplicationVersion", "KString", "", "", "201800"
-			P: "LastSaved|DateTime_GMT", "DateTime", "", "", "19/09/2022 08:16:02.395"
-			P: "Original|ApplicationActiveProject", "KString", "", "", "C:\Users\1\Desktop"
+			P: "LastSaved|DateTime_GMT", "DateTime", "", "", "22/09/2022 10:19:19.993"
+			P: "Original|ApplicationActiveProject", "KString", "", "", "E:\AAA_myself\visualstudio2019\FBXSDKTest-main\FbxTest3"
 		}
 	}
 }
 GlobalSettings:  {
 	Version: 1000
 	Properties70:  {
-		P: "UpAxis", "int", "Integer", "",2
+		P: "UpAxis", "int", "Integer", "",1
 		P: "UpAxisSign", "int", "Integer", "",1
-		P: "FrontAxis", "int", "Integer", "",1
-		P: "FrontAxisSign", "int", "Integer", "",-1
+		P: "FrontAxis", "int", "Integer", "",2
+		P: "FrontAxisSign", "int", "Integer", "",1
 		P: "CoordAxis", "int", "Integer", "",0
 		P: "CoordAxisSign", "int", "Integer", "",1
 		P: "OriginalUpAxis", "int", "Integer", "",1
@@ -76,7 +76,7 @@ GlobalSettings:  {
 
 Documents:  {
 	Count: 1
-	Document: 2023325287392, "", "Scene" {
+	Document: 2910209848928, "", "Scene" {
 		Properties70:  {
 			P: "SourceObject", "object", "", ""
 			P: "ActiveAnimStackName", "KString", "", "", "Take 001"
@@ -96,7 +96,7 @@ References:  {
 
 Definitions:  {
 	Version: 100
-	Count: 17
+	Count: 14
 	ObjectType: "GlobalSettings" {
 		Count: 1
 	}
@@ -129,7 +129,7 @@ Definitions:  {
 		}
 	}
 	ObjectType: "Geometry" {
-		Count: 2
+		Count: 1
 		PropertyTemplate: "FbxMesh" {
 			Properties70:  {
 				P: "Color", "ColorRGB", "Color", "",0.8,0.8,0.8
@@ -265,7 +265,7 @@ Definitions:  {
 		Count: 1
 	}
 	ObjectType: "Deformer" {
-		Count: 4
+		Count: 2
 	}
 }
 
@@ -273,7 +273,7 @@ Definitions:  {
 ;------------------------------------------------------------------
 
 Objects:  {
-	Geometry: 2023572470672, "Geometry::", "Mesh" {
+	Geometry: 2913055774848, "Geometry::", "Mesh" {
 		Vertices: *294 {
 			a: -7.77777862548828,-7.77777862548828,7.77777862548828,0,-8.75,8.75,7.77777862548828,-7.77777862548828,7.77777862548828,-8.75,0,8.75,0,0,10,8.75,0,8.75,-7.77777862548828,7.77777862548828,7.77777814865112,0,8.75,8.75,7.77777862548828,7.77777862548828,7.77777862548828,-8.75,8.75,0,0,10,0,8.75,8.75,0,-7.77777862548828,7.77777814865112,-7.77777862548828,0,8.75,-8.75,7.77777862548828,7.77777862548828,-7.77777862548828,-8.75,0,-8.75,0,0,-10,8.75,0,-8.75,-7.77777862548828,-7.77777862548828,-7.77777814865112,0,-8.75,-8.75,7.77777862548828,-7.77777862548828,-7.77777862548828,-8.75,-8.75,0,0,-10,0,8.75,-8.75,0,10,0,0,-10,0,0,-8.75,5,-8.75,8.75,5,-8.75,5,0,-10,0,-5,-10,-5,-8.75,-8.75,-8.75,-5,-8.75,8.75,-5,-8.75,5,-8.75,-8.75,0,-10,-5,-5,-10,0,-8.75,-8.75,-5,8.75,-8.75,-5,5,-10,0,0,-10,5,-8.75,-8.75,5,8.75,-8.75,5,10,0,-5,10,-5,0,10,0,5,10,5,0,-10,-5,0,-10,0,-5,-10,0,5,-10,5,0,-5,-8.75,8.75,0,-5,10,-5,0,10,-8.75,-5,8.75,5,-8.75,8.75,8.75,-5,8.75,5,0,10,0,5,10,-5,8.75,8.75,-8.75,5,8.75,8.75,5,8.75,5,8.75,8.75,0,10,5,-5,10,0,-8.75,8.75,5,8.75,8.75,5,5,10,0,0,10,-5,-5,8.75,-8.75,-8.75,8.75,-5,8.75,8.75,-5,5,8.75,-8.75,0,5,-10,-5,0,-10,-5,-5,10,5,-5,10,-5,5,10,5,5,10,-5,10,5,5,10,5,-5,10,-5,5,10,-5,-5,5,-10,5,5,-10,-5,-5,-10,5,-5,-10,-5,-10,-5,5,-10,-5,-5,-10,5,5,-10,5,10,-5,-5,10,-5,5,10,5,-5,10,5,5,-10,-5,-5,-10,-5,5,-10,5,-5,-10,5,5
 		} 
@@ -348,34 +348,21 @@ Objects:  {
 			}
 		}
 	}
-	NodeAttribute: 2023078466720, "NodeAttribute::", "LimbNode" {
+	NodeAttribute: 2913068641664, "NodeAttribute::", "LimbNode" {
 		Properties70:  {
 			P: "Size", "double", "Number", "",32.183908045977
 		}
 		TypeFlags: "Skeleton"
 	}
-	NodeAttribute: 2023078465760, "NodeAttribute::", "LimbNode" {
+	NodeAttribute: 2913068644736, "NodeAttribute::", "LimbNode" {
 		Properties70:  {
 			P: "Size", "double", "Number", "",32.183908045977
 		}
 		TypeFlags: "Skeleton"
 	}
-	Geometry: 2023097590176, "Geometry::pCube2", "Shape" {
-		Version: 100
-		Indexes: *1 {
-			a: 10
-		} 
-		Vertices: *3 {
-			a: 0,5.27506542205811,0
-		} 
-		Normals: *3 {
-			a: 0,0,0
-		} 
-	}
-	Model: 2023419069456, "Model::pCube1", "Mesh" {
+	Model: 2910957660720, "Model::pCube2", "Mesh" {
 		Version: 232
 		Properties70:  {
-			P: "PreRotation", "Vector3D", "Vector", "",90,-0,0
 			P: "RotationActive", "bool", "", "",1
 			P: "InheritType", "enum", "", "",1
 			P: "ScalingMax", "Vector3D", "Vector", "",0,0,0
@@ -388,19 +375,20 @@ Objects:  {
 		Shading: T
 		Culling: "CullingOff"
 	}
-	Model: 2023419078736, "Model::joint1", "LimbNode" {
+	Model: 2910957630560, "Model::joint1", "LimbNode" {
 		Version: 232
 		Properties70:  {
-			P: "PreRotation", "Vector3D", "Vector", "",90,-0,0
+			P: "PreRotation", "Vector3D", "Vector", "",0,-0,90
 			P: "RotationActive", "bool", "", "",1
 			P: "InheritType", "enum", "", "",1
 			P: "ScalingMax", "Vector3D", "Vector", "",0,0,0
 			P: "DefaultAttributeIndex", "int", "Integer", "",0
+			P: "lockInfluenceWeights", "Bool", "", "A+U",0
 		}
 		Shading: Y
 		Culling: "CullingOff"
 	}
-	Model: 2023419085696, "Model::joint2", "LimbNode" {
+	Model: 2910957663040, "Model::joint2", "LimbNode" {
 		Version: 232
 		Properties70:  {
 			P: "PreRotation", "Vector3D", "Vector", "",0,0,-90
@@ -409,35 +397,28 @@ Objects:  {
 			P: "ScalingMax", "Vector3D", "Vector", "",0,0,0
 			P: "DefaultAttributeIndex", "int", "Integer", "",0
 			P: "Lcl Translation", "Lcl Translation", "", "A",10,2.22044604925031e-15,0
-			P: "lockInfluenceWeights", "Bool", "", "A+U",0
 		}
 		Shading: Y
 		Culling: "CullingOff"
 	}
-	Pose: 2023424396624, "Pose::skinCluster1", "BindPose" {
+	Pose: 2913051423584, "Pose::skinCluster1", "BindPose" {
 		Type: "BindPose"
 		Version: 100
-		NbPoseNodes: 3
+		NbPoseNodes: 2
 		PoseNode:  {
-			Node: 2023419078736
+			Node: 2910957660720
 			Matrix: *16 {
-				a: 2.22044604925031e-16,0,1,0,-1,0,2.22044604925031e-16,0,0,-1,0,0,0,0,0,1
+				a: 1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1
 			} 
 		}
 		PoseNode:  {
-			Node: 2023419085696
+			Node: 2910957630560
 			Matrix: *16 {
-				a: 1,0,0,0,0,0,1,0,0,-1,0,0,0,0,10,1
-			} 
-		}
-		PoseNode:  {
-			Node: 2023419069456
-			Matrix: *16 {
-				a: 1,0,0,0,0,0,1,0,0,-1,0,0,0,0,0,1
+				a: 2.22044604925031e-16,1,0,0,-1,2.22044604925031e-16,0,0,0,0,1,0,0,0,0,1
 			} 
 		}
 	}
-	Material: 2024870566384, "Material::lambert2", "" {
+	Material: 2910647972192, "Material::lambert3", "" {
 		Version: 102
 		ShadingModel: "lambert"
 		MultiLayer: 0
@@ -452,12 +433,12 @@ Objects:  {
 			P: "Opacity", "double", "Number", "",1
 		}
 	}
-	Deformer: 2023078468640, "Deformer::", "Skin" {
+	Deformer: 2913068640320, "Deformer::", "Skin" {
 		Version: 101
 		Link_DeformAcuracy: 50
 		SkinningType: "Linear"
 	}
-	Deformer: 2023109941664, "SubDeformer::", "Cluster" {
+	Deformer: 2910156393200, "SubDeformer::", "Cluster" {
 		Version: 100
 		UserData: "", ""
 		Indexes: *98 {
@@ -467,23 +448,13 @@ Objects:  {
 			a: 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 		} 
 		Transform: *16 {
-			a: 1,0,0,0,0,1,0,0,0,0,1,0,0,-10,-6.12323399573677e-16,1
+			a: 2.83276944882399e-16,-1,0,0,1,2.83276944882399e-16,0,0,0,0,1,0,0,0,0,1
 		} 
 		TransformLink: *16 {
-			a: 1,0,0,0,-0,6.12323399573677e-17,1,0,0,-1,6.12323399573677e-17,0,0,0,10,1
+			a: 2.83276944882399e-16,1,0,0,-1,2.83276944882399e-16,0,0,0,-0,1,0,-0,0,0,1
 		} 
 	}
-	Deformer: 2023323172976, "Deformer::blendShape1", "BlendShape" {
-		Version: 100
-	}
-	Deformer: 2023424401376, "SubDeformer::blendShape1.pCube2", "BlendShapeChannel" {
-		Version: 100
-		DeformPercent: 0
-		FullWeights: *1 {
-			a: 100
-		} 
-	}
-	AnimationStack: 2023329324592, "AnimStack::Take 001", "" {
+	AnimationStack: 2912968905648, "AnimStack::Take 001", "" {
 		Properties70:  {
 			P: "LocalStart", "KTime", "Time", "",1924423250
 			P: "LocalStop", "KTime", "Time", "",230930790000
@@ -491,12 +462,12 @@ Objects:  {
 			P: "ReferenceStop", "KTime", "Time", "",230930790000
 		}
 	}
-	AnimationCurveNode: 2023329325216, "AnimCurveNode::lockInfluenceWeights", "" {
+	AnimationCurveNode: 2912968905856, "AnimCurveNode::lockInfluenceWeights", "" {
 		Properties70:  {
 			P: "d|lockInfluenceWeights", "Bool", "", "A",0
 		}
 	}
-	AnimationLayer: 2023572438208, "AnimLayer::BaseLayer", "" {
+	AnimationLayer: 2910822520640, "AnimLayer::BaseLayer", "" {
 	}
 }
 
@@ -505,53 +476,44 @@ Objects:  {
 
 Connections:  {
 	
-	;Model::pCube1, Model::RootNode
-	C: "OO",2023419069456,0
+	;Model::pCube2, Model::RootNode
+	C: "OO",2910957660720,0
 	
 	;Model::joint1, Model::RootNode
-	C: "OO",2023419078736,0
+	C: "OO",2910957630560,0
 	
 	;AnimLayer::BaseLayer, AnimStack::Take 001
-	C: "OO",2023572438208,2023329324592
+	C: "OO",2910822520640,2912968905648
 	
 	;AnimCurveNode::lockInfluenceWeights, AnimLayer::BaseLayer
-	C: "OO",2023329325216,2023572438208
+	C: "OO",2912968905856,2910822520640
 	
 	;Deformer::, Geometry::
-	C: "OO",2023078468640,2023572470672
+	C: "OO",2913068640320,2913055774848
 	
-	;Deformer::blendShape1, Geometry::
-	C: "OO",2023323172976,2023572470672
+	;Geometry::, Model::pCube2
+	C: "OO",2913055774848,2910957660720
 	
-	;Geometry::, Model::pCube1
-	C: "OO",2023572470672,2023419069456
-	
-	;Material::lambert2, Model::pCube1
-	C: "OO",2024870566384,2023419069456
+	;Material::lambert3, Model::pCube2
+	C: "OO",2910647972192,2910957660720
 	
 	;NodeAttribute::, Model::joint1
-	C: "OO",2023078466720,2023419078736
+	C: "OO",2913068641664,2910957630560
 	
 	;Model::joint2, Model::joint1
-	C: "OO",2023419085696,2023419078736
+	C: "OO",2910957663040,2910957630560
+	
+	;AnimCurveNode::lockInfluenceWeights, Model::joint1
+	C: "OP",2912968905856,2910957630560, "lockInfluenceWeights"
 	
 	;NodeAttribute::, Model::joint2
-	C: "OO",2023078465760,2023419085696
-	
-	;AnimCurveNode::lockInfluenceWeights, Model::joint2
-	C: "OP",2023329325216,2023419085696, "lockInfluenceWeights"
+	C: "OO",2913068644736,2910957663040
 	
 	;SubDeformer::, Deformer::
-	C: "OO",2023109941664,2023078468640
+	C: "OO",2910156393200,2913068640320
 	
-	;Model::joint2, SubDeformer::
-	C: "OO",2023419085696,2023109941664
-	
-	;SubDeformer::blendShape1.pCube2, Deformer::blendShape1
-	C: "OO",2023424401376,2023323172976
-	
-	;Geometry::pCube2, SubDeformer::blendShape1.pCube2
-	C: "OO",2023097590176,2023424401376
+	;Model::joint1, SubDeformer::
+	C: "OO",2910957630560,2910156393200
 }
 ;Takes section
 ;----------------------------------------------------

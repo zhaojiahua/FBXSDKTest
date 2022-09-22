@@ -22,3 +22,8 @@ void DisplayMetaData(FbxScene* pScene);
 FbxNode* CreatePatch(FbxScene* pScene, const char* pName);
 FbxNode* CreateSkeleton(FbxScene* pScene, const char* pName);
 
+void AddBlendShape(FbxMesh* selfMesh, FbxMesh* targetMesh);
+
+void LoadObjAsShape(FbxManager* pManager, FbxDocument* pScene, const char* pFilename);
+
+void ReadObjShape(FbxManager* pManager, FbxDocument* pScene, const char* pFilename);
