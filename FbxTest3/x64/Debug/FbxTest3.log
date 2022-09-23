@@ -1,2 +1,3 @@
 ﻿  DisplayShape.cpp
-  FbxTest3.vcxproj -> E:\AAAWorking\visualStudio\FBXSDKTest-main\FbxTest3\x64\Debug\FbxTest3.exe
+E:\AAA_myself\visualstudio2019\FBXSDKTest-main\FbxTest3\DisplayShape.cpp(502,18): warning C4477: “printf_s”: 格式字符串“%s”需要类型“char *”的参数，但可变参数 1 拥有了类型“fbxsdk::FbxString”
+  FbxTest3.vcxproj -> E:\AAA_myself\visualstudio2019\FBXSDKTest-main\FbxTest3\x64\Debug\FbxTest3.exe

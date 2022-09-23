@@ -29,6 +29,10 @@ void AddBlendShape(FbxMesh* selfMesh, FbxMesh* targetMesh, vector<vector<double>
 
 void LoadObjAsShape(FbxManager* pManager, FbxDocument* pScene, const char* pFilename);
 
-void ReadObjShape(const char* pFilename, vector<vector<double>>& shapePoints);
+void ReadObjShape(FbxString pFilename, vector<vector<double>>& shapePoints);
 
-void BatchImportBlendShape();
+void BatchImportBlendShape(FbxString filepath, FbxMesh* selfAndTarfetMesh);
+
+void GetFiles(FbxString path, FbxArray<FbxString*>& files);
+
+

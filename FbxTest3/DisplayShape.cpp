@@ -16,7 +16,7 @@ int main()
 	FbxScene* fbxScene = NULL;
 	bool result;
 	InitializeSdkObjects(fbxManager, fbxScene);
-	FbxString fbxFilePath("test.fbx");		/////////////////////////////////////////////////////////////////读取路径
+	FbxString fbxFilePath("test.fbx");		/////////////////////////////////////////////////////////////////Load FBX file path
 	if (fbxFilePath.IsEmpty())
 	{
 		FBXSDK_printf("\n\nUsage: ImportScene <FBX file name>\n\n");
@@ -30,22 +30,24 @@ int main()
 	if (result == false) { FBXSDK_printf("\n\nAn error occurred while loading the scene..."); }
 	else
 	{
-		// Display the scene.
-		DisplayMetaData(fbxScene);
-
 		FbxNode* lRootNode = fbxScene->GetRootNode();
 		for (int i = 0; i < lRootNode->GetChildCount(); i++)
 		{
 			FbxNode* tempNode = lRootNode->GetChild(i);
 			if (tempNode->GetNodeAttribute()->GetAttributeType() == FbxNodeAttribute::eMesh)
 			{
-				vector<vector<double>> filepos;
+				/*vector<vector<double>> filepos;
 				ReadObjShape("test.obj", filepos);
-				AddBlendShape(tempNode->GetMesh(), tempNode->GetMesh(), filepos, "bshape050");
+				AddBlendShape(tempNode->GetMesh(), tempNode->GetMesh(), filepos, "bshape050");*/
+				//BatchImportBlendShape("\\objshapes", tempNode->GetMesh());
+				FbxArray< FbxString*> files;
+				GetFiles("\\objshapes", files);
 			}
 		}
 	}
-	result = SaveScene(fbxManager, fbxScene, "test_out2.fbx");		////////////////////////////////////////////////写出路径
+
+	//////////////////////////////////////////save fbx/////////////////////////////////////////////////////////
+	result = SaveScene(fbxManager, fbxScene, "test_out2.fbx");		////////////////////////////////////////////////export fbx file path
 	if (result == false)
 	{
 		FBXSDK_printf("\n\nAn error occurred while saving the scene...\n");
@@ -435,10 +437,10 @@ void LoadObjAsShape(FbxManager* pManager, FbxDocument* pScene, const char* pFile
 	importer->Destroy();
 }
 
-void ReadObjShape(const char* pFilename, vector<vector<double>>& shapePoints)
+void ReadObjShape(FbxString pFilename, vector<vector<double>>& shapePoints)
 {
 	ifstream fin;
-	fin.open(pFilename, ios::in);
+	fin.open(pFilename.Buffer(), ios::in);
 	if (!fin.is_open())
 	{
 		FBXSDK_printf("\n\nAn error occurred while read the shape...\n");
@@ -461,3 +463,46 @@ void ReadObjShape(const char* pFilename, vector<vector<double>>& shapePoints)
 	fin.close();
 	FBXSDK_printf("\n\nRead over\n");
 }
+
+void BatchImportBlendShape(FbxString filepath, FbxMesh* selfAndTarfetMesh)
+{
+	FbxArray<FbxString*> objfiles;
+	GetFiles(filepath, objfiles);
+	if (objfiles.Size() > 0)
+	{
+		for (int i = 0; i < objfiles.Size(); i++)
+		{
+			vector<vector<double>> tempfilePos;
+			ReadObjShape(objfiles[i]->Buffer(), tempfilePos);
+			AddBlendShape(selfAndTarfetMesh, selfAndTarfetMesh, tempfilePos, "bshape" + FbxString(i));
+		}
+	}
+}
+
+void GetFiles(FbxString path, FbxArray<FbxString*>& files)
+{
+	FbxFolder fbxfolder = FbxFolder();
+	bool openresult = fbxfolder.Open(path);
+	if (openresult)
+	{
+		FBXSDK_printf("open folder \n");
+		if (fbxfolder.IsOpen()) { FBXSDK_printf("folder is opened\n"); }
+		fbxfolder.Next();
+		FbxString* prename = new FbxString;
+		*prename =fbxfolder.GetEntryName();
+		fbxfolder.Next();
+		FbxString* currentname = new FbxString;
+		*currentname = fbxfolder.GetEntryName();
+		while(true)
+		{
+			*prename = fbxfolder.GetEntryName();
+			fbxfolder.Next();
+			*currentname = fbxfolder.GetEntryName();
+			files.Add(prename);
+			FBXSDK_printf("prename %s\n", *prename);
+			if (*prename == *currentname) break;
+		}
+	}
+	fbxfolder.Close();
+}
+
