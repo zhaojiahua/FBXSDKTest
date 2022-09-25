@@ -16,7 +16,9 @@ int main()
 	FbxScene* fbxScene = NULL;
 	bool result;
 	InitializeSdkObjects(fbxManager, fbxScene);
-	FbxString fbxFilePath("test.fbx");		/////////////////////////////////////////////////////////////////Load FBX file path
+	FbxString fbxFilePath("test.fbx");		//////////////////////////////////////////////////////////////////////////Load FBX file path
+
+	//////////////////////////////////////////load fbx/////////////////////////////////////////////////////////
 	if (fbxFilePath.IsEmpty())
 	{
 		FBXSDK_printf("\n\nUsage: ImportScene <FBX file name>\n\n");
@@ -27,19 +29,29 @@ int main()
 		FBXSDK_printf("\n\nFile: %s\n\n", fbxFilePath.Buffer());
 		result = LoadScene(fbxManager, fbxScene, fbxFilePath.Buffer());
 	}
-	if (result == false) { FBXSDK_printf("\n\nAn error occurred while loading the scene..."); }
-	else
+	if (result == false)
 	{
-		FbxNode* lRootNode = fbxScene->GetRootNode();
-		for (int i = 0; i < lRootNode->GetChildCount(); i++)
+		FBXSDK_printf("\n\nAn error occurred while loading the scene..."); 
+		getchar();
+		return 0;
+	}
+	FbxNode* lRootNode = fbxScene->GetRootNode();
+
+	//////////////////////////////////////////add shapes//////////////////////////////////////////////////////
+	
+	for (int i = 0; i < lRootNode->GetChildCount(); i++)
+	{
+		FbxNode* tempNode = lRootNode->GetChild(i);
+		if (tempNode->GetNodeAttribute()->GetAttributeType() == FbxNodeAttribute::eMesh)
 		{
-			FbxNode* tempNode = lRootNode->GetChild(i);
-			if (tempNode->GetNodeAttribute()->GetAttributeType() == FbxNodeAttribute::eMesh)
-			{
-				BatchImportBlendShape("objshapes", tempNode->GetMesh());
-			}
+			//BatchImportBlendShape(fbxScene, "objshapes", tempNode->GetMesh());
+			//////////////////////////////////////////add animations/////////////////////////////////////////////////
+
+			AddAnimations(tempNode->GetMesh(), fbxScene);
 		}
 	}
+	
+
 	//////////////////////////////////////////save fbx/////////////////////////////////////////////////////////
 	result = SaveScene(fbxManager, fbxScene, "test_out2.fbx");		////////////////////////////////////////////////export fbx file path
 	if (result == false)
@@ -49,8 +61,7 @@ int main()
 		getchar();
 		return 0;
 	}
-	getchar();
-	return 0;
+	return 1;
 }
 
 void DisplayShape(FbxGeometry* pGeometry)
@@ -365,6 +376,58 @@ void AddBlendShape(FbxMesh* selfMesh, FbxMesh* targetMesh, vector<vector<double>
 	if (!addShapeResult)  FBXSDK_printf("addShapeResult Failed\n");
 }
 
+void AddBlendShape(FbxScene* infbxScene, FbxMesh* selfMesh, FbxMesh* targetMesh, vector<vector<double>> infilePos, FbxBlendShape* bs, FbxString inbsname)
+{
+	//创建动画曲线/////////
+	FbxAnimStack* fbxAnimStack = infbxScene->GetCurrentAnimationStack();
+
+	//add a new animLayer
+	FbxAnimLayer* newAnimLayer = FbxAnimLayer::Create(infbxScene, "BaseAnimLayer");
+	newAnimLayer->SetBlendModeBypass(eFbxTypeCount, true);		// set the bypass to all the datatypes
+	fbxAnimStack->AddMember(newAnimLayer);
+	FbxAnimCurveNode* aniCurveNode = newAnimLayer->CreateCurveNode(newAnimLayer->Weight);
+	if (aniCurveNode)
+	{
+		aniCurveNode->AddChannel("myAddedChannel", 99);
+		int chC = aniCurveNode->GetChannelsCount();
+		FBXSDK_printf("aniCurveNode ChannelsCount %d\n", chC);
+	}
+	//创建animation curve
+	FbxAnimCurve* anicurve = newAnimLayer->Weight.GetCurve(newAnimLayer, true);
+	if (anicurve)
+	{
+		FbxTime temptime = FbxTime();
+		anicurve->KeyModifyBegin();
+		for (int j = 0; j < 4; j++)
+		{
+			temptime.SetSecondDouble((float)j);
+			int keyIndex = anicurve->KeyAdd(temptime);
+			anicurve->KeySetValue(keyIndex, j * 10.0f);
+		}
+		anicurve->KeyModifyEnd();
+	}
+	/// ///////////////////////////////////////////////
+
+	if (targetMesh->GetControlPointsCount() != infilePos.size())
+	{
+		FBXSDK_printf("error: targetMesh controlPoints !=infilePos size \n");
+		return;
+	}
+	selfMesh->AddDeformer(bs);
+	FbxBlendShapeChannel* bsCh = FbxBlendShapeChannel::Create(selfMesh, "");
+	bool addChannelResult = bs->AddBlendShapeChannel(bsCh);
+	if (!addChannelResult)  FBXSDK_printf("addChannelResult Failed\n");
+	bsCh->ConnectSrcObject(anicurve, FbxConnection::eData);
+
+	FbxShape* shape = FbxShape::Create(targetMesh, inbsname);
+	for (int i = 0; i < infilePos.size(); i++)
+	{
+		shape->SetControlPointAt(FbxVector4(infilePos[i][0], infilePos[i][1], infilePos[i][2], 0), i);
+	}
+	bool addShapeResult = bsCh->AddTargetShape(shape, 100);
+	if (!addShapeResult)  FBXSDK_printf("addShapeResult Failed\n");
+}
+
 void LoadObjAsShape(FbxManager* pManager, FbxDocument* pScene, const char* pFilename)
 {
 	FbxImporter* importer = FbxImporter::Create(pManager, "");
@@ -440,6 +503,37 @@ void BatchImportBlendShape(FbxString filepath, FbxMesh* selfAndTarfetMesh)
 	objfiles.~FbxArray();		//用完这个数组一定要记得清掉
 }
 
+void BatchImportBlendShape(FbxScene* inScene, FbxString filepath, FbxMesh* selfAndTarfetMesh)
+{
+	int bsCount = selfAndTarfetMesh->GetDeformerCount(FbxDeformer::eBlendShape);
+	int defCount = selfAndTarfetMesh->GetDeformerCount();
+	if (bsCount != 0)
+	{
+		for (int i = 0; i < defCount; i++)
+		{
+			if (selfAndTarfetMesh->GetDeformer(i) && selfAndTarfetMesh->GetDeformer(i)->GetDeformerType() == FbxDeformer::eBlendShape)
+			{
+				selfAndTarfetMesh->RemoveDeformer(i);		//先清理掉所有的BS通道
+			}
+		}
+	}
+	FbxBlendShape* bs = FbxBlendShape::Create(selfAndTarfetMesh, "FaceBS");
+	FbxArray<FbxString*> objfiles;
+	GetFiles(filepath, objfiles);
+	if (objfiles.Size() > 0)
+	{
+		for (int i = 0; i < objfiles.Size(); i++)
+		{
+			vector<vector<double>> tempfilePos;
+			ReadObjShape(filepath + "\\" + objfiles[i]->Buffer(), tempfilePos);
+			AddBlendShape(inScene, selfAndTarfetMesh, selfAndTarfetMesh, tempfilePos, bs, objfiles[i]->Left(objfiles[i]->Size() - 4));
+			FBXSDK_printf(*objfiles[i] + " shape add successful\n\n");
+		}
+	}
+	else FBXSDK_printf("no obj files! failed to add shape\n\n");
+	objfiles.~FbxArray();		//用完这个数组一定要记得清掉
+}
+
 void GetFiles(FbxString path, FbxArray<FbxString*>& files)
 {
 	FbxFolder fbxfolder = FbxFolder();
@@ -466,5 +560,47 @@ void GetFiles(FbxString path, FbxArray<FbxString*>& files)
 		}
 	}
 	fbxfolder.Close();
+}
+
+void AddAnimations(FbxMesh* inmesh, FbxScene*  fbxScene)
+{
+	FbxAnimStack* fbxAnimStack = fbxScene->GetCurrentAnimationStack();
+	int aniLayerCount = fbxAnimStack->GetMemberCount();
+	//添加动画前先清除所有动画
+	for (int i = 0; i < aniLayerCount; i++)
+	{
+		FbxObject* aniLayer = fbxAnimStack->GetMember(i);
+		if (aniLayer != nullptr)
+		{
+			fbxAnimStack->RemoveMember(aniLayer);
+		}
+	}
+	//add a new animLayer
+	FbxAnimLayer* newAnimLayer = FbxAnimLayer::Create(fbxScene, "BaseAnimLayer");
+	newAnimLayer->SetBlendModeBypass(eFbxTypeCount, true);		// set the bypass to all the datatypes
+	fbxAnimStack->AddMember(newAnimLayer);
+	FbxAnimCurveNode* aniCurveNode = newAnimLayer->CreateCurveNode(newAnimLayer->Weight);
+	if (aniCurveNode)
+	{
+		aniCurveNode->AddChannel("myAddedChannel", 99);
+		int chC = aniCurveNode->GetChannelsCount();
+		FBXSDK_printf("aniCurveNode ChannelsCount %d\n", chC);
+	}
+	//创建animation curve
+	FbxAnimCurve* anicurve = inmesh->BBoxMax.GetCurve(newAnimLayer, true);
+	if (anicurve)
+	{
+		FbxTime temptime = FbxTime();
+		anicurve->KeyModifyBegin();
+		for (int j = 0; j < 4; j++)
+		{
+			temptime.SetSecondDouble((float)j);
+			int keyIndex = anicurve->KeyAdd(temptime);
+			anicurve->KeySetValue(keyIndex, j * 10.0f);
+		}
+		anicurve->KeyModifyEnd();
+	}
+
+	
 }
 
