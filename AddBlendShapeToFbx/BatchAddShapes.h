@@ -22,7 +22,7 @@ FbxNode* CreateSkeleton(FbxScene* pScene, const char* pName);
 
 void AddBlendShape(FbxMesh* selfMesh, FbxMesh* targetMesh, vector<vector<double>> infilePos, FbxBlendShape* bs, FbxString inbsname);
 
-void AddBlendShape(FbxScene* infbxScene, FbxMesh* selfMesh, FbxMesh* targetMesh, vector<vector<double>> infilePos, FbxBlendShape* bs, FbxString inbsname);
+void AddBlendShape(FbxAnimLayer* inAnimLayer, FbxMesh* selfMesh, FbxMesh* targetMesh, vector<vector<double>> infilePos, FbxBlendShape* bs, FbxString inbsname, unsigned inI);
 
 void LoadObjAsShape(FbxManager* pManager, FbxDocument* pScene, const char* pFilename);
 
